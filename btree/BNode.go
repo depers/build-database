@@ -16,12 +16,14 @@ const (
 // 2个字节：用于存储节点存储的键的数量
 // 键的数量 * 8个字节：用于存储保存指向子节点的指针列表
 // 键的数量 * 2个字节：用于存储指向每个键值对的偏移量列表
-// 2个字节：用于存储key
-// 2个字节：用于存储value
-// 2个字节：用于存储key
-// 2个字节：用于存储value
-// 2个字节：用于存储key
-// 2个字节：用于存储value
+// 2个字节：用于存储key的长度
+// 2个字节：用于存储value存储value的长度
+// 多个字节：用于存储key
+// 多个字节：用于存储value
+// 2个字节：用于存储key的长度
+// 2个字节：用于存储value存储value的长度
+// 多个字节：用于存储key
+// 多个字节：用于存储value
 //.....
 
 // 节点头的数据是4个字节，分别是节点类型和键的数量
@@ -91,16 +93,21 @@ func (node BNode) setOffset(idx uint16, offset uint16) {
 }
 
 // key-values
+// 获取第idx键值对在存储节点的字节数组中的下标
 func (node BNode) kvPos(idx uint16) uint16 {
 	assert(idx <= node.nkeys())
 	return HEADER + 8*node.nkeys() + 2*node.nkeys() + node.getOffset(idx)
 }
+
+// 获取键
 func (node BNode) getKey(idx uint16) []byte {
 	assert(idx < node.nkeys())
 	pos := node.kvPos(idx)
 	klen := binary.LittleEndian.Uint16(node.data[pos:])
 	return node.data[pos+4:][:klen]
 }
+
+// 获取值
 func (node BNode) getVal(idx uint16) []byte {
 	assert(idx < node.nkeys())
 	pos := node.kvPos(idx)
@@ -109,6 +116,10 @@ func (node BNode) getVal(idx uint16) []byte {
 	return node.data[pos+4+klen:][:vlen]
 }
 
+// 获取节点的大小，假设当前节点有10个键值对，那么获取第10个节点的偏移量就是获取整个节点的存储大小。其实第十个键值对的偏移量的下标是9
+func (node BNode) nbytes() uint16 {
+	return node.kvPos(node.nkeys())
+}
 func assert(b bool) {
 
 }

@@ -6,10 +6,7 @@ import (
 	"os"
 )
 
-/*
-*
-采用重命名的方式更新文件
-*/
+// SaveData2 采用重命名的方式更新文件
 func SaveData2(path string, data []byte) error {
 
 	tmp := fmt.Sprintf("%s.tmp.%d", path, randomInt())
