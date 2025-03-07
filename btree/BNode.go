@@ -3,12 +3,12 @@ package btree
 import "encoding/binary"
 
 type BNode struct {
-	data []byte
+	data []byte // 可以存储到磁盘上
 }
 
 const (
-	BNODE_NODE = 1
-	BNODE_LEAF = 2
+	BNODE_NODE = 1 // 没有值的内部节点
+	BNODE_LEAF = 2 // 有值的叶子节点
 )
 
 // 一个节点存储为字节数组，存储的主要内容是：
@@ -17,11 +17,11 @@ const (
 // 键的数量 * 8个字节：用于存储保存指向子节点的指针列表
 // 键的数量 * 2个字节：用于存储指向每个键值对的偏移量列表
 // 2个字节：用于存储key的长度
-// 2个字节：用于存储value存储value的长度
+// 2个字节：用于存储value的长度
 // 多个字节：用于存储key
 // 多个字节：用于存储value
 // 2个字节：用于存储key的长度
-// 2个字节：用于存储value存储value的长度
+// 2个字节：用于存储value的长度
 // 多个字节：用于存储key
 // 多个字节：用于存储value
 //.....
@@ -29,6 +29,7 @@ const (
 // 节点头的数据是4个字节，分别是节点类型和键的数量
 const HEADER = 4
 
+// 页大小
 const BTREE_PAGE_SIZE = 4096
 const BTREE_MAX_KEY_SIZE = 1000
 const BTREE_MAX_VAL_SIZE = 3000
